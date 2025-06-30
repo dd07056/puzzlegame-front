@@ -1,0 +1,90 @@
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding: 2rem;
+  background-color: #f7fafc;
+  color: #1a202c;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #2d3748;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 랭킹을 가로로 나열 */
+.rankingContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.gameSection {
+  width: 300px;
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background: white;
+  box-shadow: 0 4px 6px rgb(160 174 192 / 0.2);
+  padding: 1rem 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.gameSection:hover {
+  box-shadow: 0 6px 12px rgb(160 174 192 / 0.35);
+}
+
+.gameTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #4a5568;
+  border-bottom: 2px solid #cbd5e0;
+  padding-bottom: 0.25rem;
+}
+
+.rankingList {
+  list-style-position: inside;
+  color: #2d3748;
+}
+
+.rankingList li {
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.noRanking {
+  font-style: italic;
+  color: #718096;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.homeButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #3182ce;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 5px rgb(49 130 206 / 0.5);
+}
+
+.homeButton:hover {
+  background-color: #2b6cb0;
+}

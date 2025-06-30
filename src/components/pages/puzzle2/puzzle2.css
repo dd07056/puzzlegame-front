@@ -1,0 +1,137 @@
+.puzzle2-container {
+  padding: 24px;
+  max-width: 480px;
+  margin: 30px auto;
+  color: #333;
+  text-align: center;
+}
+
+.puzzle2-title {
+  margin-bottom: 24px;
+  font-weight: 900;
+}
+
+.puzzle2-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.puzzle2-box {
+  width: 56px;
+  height: 56px;
+  text-align: center;
+  line-height: 56px;
+  font-weight: 700;
+  font-size: 28px;
+  border-radius: 10px;
+  border: 2px solid #bbb;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.puzzle2-box.shadow {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.puzzle2-box.correct {
+  background-color: #4caf50;
+}
+
+.puzzle2-box.present {
+  background-color: #ff9800;
+}
+
+.puzzle2-box.absent {
+  background-color: #f44336;
+}
+
+.puzzle2-box.default {
+  background-color: #fff;
+}
+
+.puzzle2-info-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+  background-color: white;
+  padding-left: 6px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+
+.puzzle2-home-button {
+  padding: 5px 12px;
+  font-weight: bold;
+  color: white;
+  background-color: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(59, 130, 246, 0.6);
+  transition: background-color 0.3s ease;
+}
+
+.puzzle2-home-button:hover {
+  background-color: #2563eb;
+}
+
+.puzzle2-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.puzzle2-input {
+  font-size: 22px;
+  padding: 10px 14px;
+  width: 200px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.puzzle2-input:focus {
+  border-color: #4caf50;
+}
+
+.puzzle2-submit-button {
+  padding: 10px 22px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.puzzle2-submit-button:hover {
+  background-color: #43a047;
+}
+
+.puzzle2-result-message {
+  margin-top: 14px;
+  font-weight: bold;
+  font-size: 20px;
+  user-select: none;
+  transition: color 0.4s ease;
+}
+
+.puzzle2-result-message.win {
+  color: #4caf50;
+}
+
+.puzzle2-result-message.lose {
+  color: #f44336;
+}
