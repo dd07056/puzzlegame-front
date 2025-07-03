@@ -1,11 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // next/navigation에서 useRouter 가져오기 (Next.js 13+)
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 import "./admincontent.css";
 
-const gameList = ["puzzle1", "puzzle2", "puzzle3"];
+const gameList = [
+  { id: 1, title: "puzzle1" },
+  { id: 2, title: "puzzle2" },
+  { id: 3, title: "puzzle3" },
+];
 
 const gameNameMap = {
   puzzle1: "소코반 퍼즐",
@@ -14,162 +17,224 @@ const gameNameMap = {
 };
 
 export default function AdminContents() {
-  const router = useRouter();
-  const [allRankings, setAllRankings] = useState({});
+  const [allRankings, setAllRankings] = useState([]);
 
-  // 로그인 체크
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await axios.get("http://localhost:8081/api/common/ranking");
+      setAllRankings(res.data);
+    } catch (error) {
+      console.error("랭킹 데이터를 불러오는 중 오류 발생:", error);
+    }
+  }, []);
+
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-    if (!isLoggedIn || isLoggedIn !== "true") {
-      alert("로그인 해주세요.");
-      router.replace("/main"); // 홈으로 강제 이동
-      return;
-    }
+    fetchData();
+  }, [fetchData]);
 
-    // 로컬스토리지에서 모든 게임 랭킹 불러오기
-    const allData = {};
-    gameList.forEach((gameName) => {
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8081/api/admin/logout",
+        {},
+        { withCredentials: true }
+      );
+      alert("로그아웃 되었습니다.");
+      window.location.href = "/login";
+    } catch (error) {
+      alert("로그아웃 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
+  const handleNameChange = (gameTitle, idx, newName) => {
+    setAllRankings((prev) =>
+      prev.map((game) => {
+        if (game.puzzlegameId === getGameId(gameTitle)) {
+          const newForms = [...game.forms];
+          newForms[idx] = { ...newForms[idx], name: newName };
+          return { ...game, forms: newForms };
+        }
+        return game;
+      })
+    );
+  };
+
+  const handleScoreChange = (gameTitle, idx, newScore) => {
+    setAllRankings((prev) =>
+      prev.map((game) => {
+        if (game.puzzlegameId === getGameId(gameTitle)) {
+          const newForms = [...game.forms];
+          newForms[idx] = { ...newForms[idx], score: Number(newScore) };
+          return { ...game, forms: newForms };
+        }
+        return game;
+      })
+    );
+  };
+
+  const handleDeleteEntry = async (gameTitle, idx) => {
+    if (
+      window.confirm(
+        `${gameNameMap[gameTitle]} 랭킹에서 이 항목을 삭제하시겠습니까?`
+      )
+    ) {
       try {
-        const data = JSON.parse(
-          localStorage.getItem(`ranking_${gameName}`) || "[]"
+        const game = allRankings.find(
+          (g) => g.puzzlegameId === getGameId(gameTitle)
         );
-        allData[gameName] = data;
-      } catch {
-        allData[gameName] = [];
+        if (!game) return;
+
+        const idToDelete = game.forms[idx].id;
+        await axios.delete(
+          `http://localhost:8081/api/admin/ranking/delete/data/${idToDelete}`
+        );
+        fetchData();
+      } catch (error) {
+        alert("삭제 중 오류가 발생했습니다.");
+        console.error(error);
       }
-    });
-    setAllRankings(allData);
-  }, [router]);
-
-  // 저장: 로컬스토리지 + 상태 동기화
-  const saveRanking = (gameName, newRanking) => {
-    localStorage.setItem(`ranking_${gameName}`, JSON.stringify(newRanking));
-    setAllRankings((prev) => ({ ...prev, [gameName]: newRanking }));
-  };
-
-  // 개별 항목 이름 변경
-  const handleNameChange = (gameName, index, newName) => {
-    const ranking = [...(allRankings[gameName] || [])];
-    ranking[index].username = newName;
-    saveRanking(gameName, ranking);
-  };
-
-  // 개별 항목 점수 변경
-  const handleScoreChange = (gameName, index, newScore) => {
-    const ranking = [...(allRankings[gameName] || [])];
-    const parsedScore = parseInt(newScore);
-    if (!isNaN(parsedScore)) {
-      ranking[index].score = parsedScore;
-      // 점수 기준으로 정렬 다시 해주기
-      ranking.sort((a, b) => a.score - b.score);
-      saveRanking(gameName, ranking);
     }
   };
 
-  // 개별 항목 삭제
-  const handleDeleteEntry = (gameName, index) => {
+  // ✅ 수정된 부분: 특정 항목만 저장
+  const saveSingleRanking = async (gameTitle, item) => {
+    try {
+      await axios.patch(
+        "http://localhost:8081/api/admin/ranking/patch",
+        {
+          id: item.id,
+          name: item.name,
+          score: item.score,
+        },
+        { withCredentials: true }
+      );
+      alert(`${gameNameMap[gameTitle]} 랭킹 저장 완료`);
+      fetchData();
+    } catch (error) {
+      alert("저장 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
+  const handleResetGame = async (gameTitle) => {
     if (
       window.confirm(
-        `${gameNameMap[gameName]} 랭킹에서 이 항목을 삭제하시겠습니까?`
+        `${gameNameMap[gameTitle]} 랭킹을 정말 초기화하시겠습니까? 모든 기록이 삭제됩니다.`
       )
     ) {
-      const ranking = [...(allRankings[gameName] || [])];
-      ranking.splice(index, 1);
-      saveRanking(gameName, ranking);
+      try {
+        const gameId = getGameId(gameTitle);
+        await axios.delete(
+          `http://localhost:8081/api/admin/ranking/delete/${gameId}`
+        );
+        alert(`${gameNameMap[gameTitle]} 랭킹이 초기화되었습니다.`);
+        fetchData();
+      } catch (error) {
+        alert("초기화 중 오류가 발생했습니다.");
+        console.error(error);
+      }
     }
   };
 
-  // 개별 게임 랭킹 초기화
-  const handleResetGame = (gameName) => {
-    if (
-      window.confirm(
-        `${gameNameMap[gameName]} 랭킹을 정말 초기화하시겠습니까? 모든 기록이 삭제됩니다.`
-      )
-    ) {
-      localStorage.removeItem(`ranking_${gameName}`);
-      setAllRankings((prev) => ({ ...prev, [gameName]: [] }));
-    }
-  };
-
-  // 전체 랭킹 초기화
-  const handleResetAll = () => {
+  const handleResetAll = async () => {
     if (
       window.confirm(
         "모든 게임의 랭킹을 초기화하시겠습니까? 복구할 수 없습니다."
       )
     ) {
-      gameList.forEach((gameName) => {
-        localStorage.removeItem(`ranking_${gameName}`);
-      });
-      setAllRankings({});
+      try {
+        await axios.delete("http://localhost:8081/api/admin/ranking/delete");
+        alert("전체 게임 랭킹이 초기화되었습니다.");
+        fetchData();
+      } catch (error) {
+        alert("초기화 중 오류가 발생했습니다.");
+        console.error(error);
+      }
     }
+  };
+
+  const getGameId = (gameTitle) => {
+    const game = gameList.find((g) => g.title === gameTitle);
+    return game ? game.id : null;
   };
 
   return (
     <div className="admin-container">
-      <div className="fixed-home-button">
-        <Link href="/main" passHref>
-          <button className="home-button">홈으로</button>
-        </Link>
-      </div>
-      <h1>관리자 페이지 - 게임 랭킹 관리</h1>
+      <button className="logout-btn" onClick={handleLogout}>
+        로그아웃
+      </button>
 
-      {gameList.map((gameName) => (
-        <section key={gameName} className="admin-section">
-          <h2>{gameNameMap[gameName]} 랭킹</h2>
+      {gameList.map(({ title: gameTitle }) => (
+        <section key={gameTitle} className="admin-section">
+          <h2>{gameNameMap[gameTitle]} 랭킹</h2>
 
-          {allRankings[gameName] && allRankings[gameName].length > 0 ? (
+          {allRankings.find((g) => g.puzzlegameId === getGameId(gameTitle))
+            ?.forms.length ? (
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th className="name-col">이름</th>
-                  <th className="score-col">점수</th>
-                  <th className="delete-col">삭제</th>
+                  <th>이름</th>
+                  <th>점수</th>
+                  <th>저장</th>
+                  <th>삭제</th>
                 </tr>
               </thead>
               <tbody>
-                {allRankings[gameName].map(({ username, score }, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <input
-                        type="text"
-                        value={username}
-                        onChange={(e) =>
-                          handleNameChange(gameName, idx, e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <input
-                        type="number"
-                        min="0"
-                        value={score}
-                        onChange={(e) =>
-                          handleScoreChange(gameName, idx, e.target.value)
-                        }
-                      />
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <button
-                        className="delete-btn"
-                        onClick={() => handleDeleteEntry(gameName, idx)}
-                      >
-                        삭제
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {allRankings
+                  .find((g) => g.puzzlegameId === getGameId(gameTitle))
+                  ?.forms.sort((a, b) => a.score - b.score)
+                  .map(({ id, name, score }, idx) => (
+                    <tr key={id}>
+                      <td>
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) =>
+                            handleNameChange(gameTitle, idx, e.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          value={score}
+                          onChange={(e) =>
+                            handleScoreChange(gameTitle, idx, e.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <button
+                          className="save-btn"
+                          onClick={() =>
+                            saveSingleRanking(gameTitle, { id, name, score })
+                          }
+                        >
+                          저장
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDeleteEntry(gameTitle, idx)}
+                        >
+                          삭제
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           ) : (
-            <p className="no-ranking">랭킹 데이터가 없습니다.</p>
+            <p>랭킹 데이터가 없습니다.</p>
           )}
 
           <button
             className="reset-game-btn"
-            onClick={() => handleResetGame(gameName)}
+            onClick={() => handleResetGame(gameTitle)}
           >
-            {gameNameMap[gameName]} 랭킹 초기화
+            {gameNameMap[gameTitle]} 랭킹 초기화
           </button>
         </section>
       ))}

@@ -81,23 +81,3 @@
   background: #222;
   cursor: default;
 }
-
-/* ✅ 강제 클리어 버튼 */
-.force-clear-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 10px 16px;
-  background-color: #f87171;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-}
-
-.force-clear-button:hover {
-  background-color: #ef4444;
-}

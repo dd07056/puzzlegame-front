@@ -6,6 +6,8 @@ import PopUp from "../popup/PopUp";
 import Hangul from "hangul-js";
 import Link from "next/link";
 import "./puzzle2.css";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const MAX_TRIES = 6;
 
@@ -37,6 +39,7 @@ function getLetterStatus(answer, guess) {
 }
 
 export default function Puzzle2() {
+  const router = useRouter();
   const [answer, setAnswer] = useState("");
   const [input, setInput] = useState("");
   const [tries, setTries] = useState([]);
@@ -105,6 +108,31 @@ export default function Puzzle2() {
     );
   };
 
+  const handleSubmit2 = async () => {
+    if (username.trim() === "") {
+      alert("이름을 입력해주세요!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8081/api/common/ranking",
+        {
+          puzzlegameId: 2,
+          name: username,
+          score,
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/ranking");
+      }
+    } catch (error) {
+      alert("랭킹 등록 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="puzzle2-container">
       <h1 className="puzzle2-title">한글 단어 맞추기</h1>
@@ -170,16 +198,7 @@ export default function Puzzle2() {
             className="border p-2 rounded"
           />
           <button
-            onClick={() => {
-              if (username.trim() === "") {
-                alert("이름을 입력해주세요!");
-                return;
-              }
-              const finalScore = score ?? 7; // score 없으면 7점
-              window.location.href = `/ranking?game=puzzle2&username=${encodeURIComponent(
-                username
-              )}&score=${finalScore}`;
-            }}
+            onClick={handleSubmit2}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             랭킹 보기

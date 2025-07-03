@@ -4,6 +4,7 @@ import SettingButton from "@/components/common/button/SettingButton";
 import { useState, useEffect } from "react";
 import PopUp from "../popup/PopUp";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const playerImgUrl = "/assets/image/player.png";
 const boxImgUrl = "/assets/image/box.png";
@@ -218,9 +219,9 @@ const Sokoban = () => {
   const [showRankingButton, setShowRankingButton] = useState(false);
 
   const popupMessage =
-    `- 방향키로 플레이어를 움직이세요.\n` +
-    `- backspace버튼을 누르면 전으로 되돌아갑니다\n` +
-    `- 상자를 목표 지점 까지 밀면 클리어!\n`;
+    " - 방향키로 플레이어를 움직이세요.\n " +
+    " - backspace버튼을 누르면 전으로 되돌아갑니다\n  " +
+    "- 상자를 목표 지점 까지 밀면 클리어!\n";
 
   const move = (dx, dy) => {
     if (isCleared || showPopup) return false;
@@ -444,6 +445,31 @@ const Sokoban = () => {
     );
   };
 
+  const handleSubmit = async () => {
+    if (username.trim() === "") {
+      alert("이름을 입력해주세요!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8081/api/common/ranking",
+        {
+          puzzlegameId: 1,
+          name: username,
+          score: keyCount,
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/ranking");
+      }
+    } catch (error) {
+      alert("랭킹 등록 중 오류가 발생했습니다.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-screen bg-gray-100 flex items-center justify-center relative">
       {showPopup && (
@@ -487,17 +513,7 @@ const Sokoban = () => {
             className="border p-2 rounded"
           />
           <button
-            onClick={() => {
-              if (username.trim() === "") {
-                alert("이름을 입력해주세요!");
-                return;
-              }
-              router.push(
-                `/ranking?game=Puzzle1&username=${encodeURIComponent(
-                  username
-                )}&score=${keyCount}`
-              );
-            }}
+            onClick={handleSubmit}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             랭킹 보기

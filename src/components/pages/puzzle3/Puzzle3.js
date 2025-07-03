@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import PopUp from "../popup/PopUp";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import "./puzzle3.css";
 
 const SIZE = 4;
-const MAX_TRIES = 1000;
+const MAX_TRIES = 5000;
 const EMPTY_TILE = 16;
 
 function shuffleArray(array) {
@@ -80,6 +81,35 @@ export default function Puzzle3() {
     }
   };
 
+  // 퍼즐을 강제로 클리어하는 함수
+  // const handleForceClear = () => {
+  //   const clearedTiles = Array.from({ length: SIZE * SIZE }, (_, i) => i + 1);
+  //   setTiles(clearedTiles);
+  //   setIsCleared(true);
+  //   setShowRankingButton(true);
+  //   alert("퍼즐이 강제로 클리어되었습니다!");
+  // };
+
+  const handleSubmit2 = async () => {
+    if (username.trim() === "") {
+      alert("이름을 입력해주세요!");
+      return;
+    }
+
+    const { data, status } = await axios.post(
+      "http://localhost:8081/api/common/ranking",
+      {
+        puzzlegameId: 3,
+        name: username,
+        score: tries.length,
+      }
+    );
+
+    if (status === 200) {
+      router.push("/ranking");
+    }
+  };
+
   return (
     <>
       {isPopupOpen && (
@@ -102,7 +132,6 @@ export default function Puzzle3() {
           <button className="home-button">홈으로</button>
         </Link>
       </div>
-
       <div className="grid">
         {tiles.map((num, idx) => (
           <div
@@ -114,59 +143,28 @@ export default function Puzzle3() {
           </div>
         ))}
       </div>
-
+      {/* 퍼즐을 수동으로 클리어하는 버튼 (테스트용)
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handleForceClear}
+          className="bg-green-600 text-white px-4 py-2 rounded"
+        >
+          클리어 버튼
+        </button>
+      </div> */}
       {/* 클리어 후 이름 입력 및 랭킹 버튼 */}
       {isCleared && showRankingButton && (
-        <div
-          className="ranking-input-container"
-          style={{
-            position: "fixed",
-            bottom: "2rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            backgroundColor: "white",
-            padding: "1rem 1.5rem",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            zIndex: 1000,
-          }}
-        >
+        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded shadow-md flex items-center space-x-2">
           <input
             type="text"
             placeholder="이름을 입력하세요"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              padding: "0.5rem",
-              fontSize: "1rem",
-              width: "200px",
-            }}
+            className="border p-2 rounded"
           />
           <button
-            onClick={() => {
-              if (username.trim() === "") {
-                alert("이름을 입력해주세요!");
-                return;
-              }
-              router.push(
-                `/ranking?game=puzzle3&username=${encodeURIComponent(
-                  username
-                )}&score=${tries.length}`
-              );
-            }}
-            style={{
-              backgroundColor: "#2563eb",
-              color: "white",
-              borderRadius: "4px",
-              padding: "0.5rem 1rem",
-              fontWeight: "600",
-              cursor: "pointer",
-            }}
+            onClick={handleSubmit2}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             랭킹 보기
           </button>

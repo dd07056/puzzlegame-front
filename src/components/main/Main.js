@@ -1,5 +1,6 @@
 import MainButton from "../common/button/MainButton";
 import SettingButton from "../common/button/SettingButton";
+import "./main.css"; // CSS 파일 import
 
 export default function Main() {
   const buttonImages = [
@@ -11,19 +12,19 @@ export default function Main() {
   ];
 
   return (
-    <div className="min-h-screen bg-cover bg-[url('/assets/image/bg1.png')] flex flex-col items-center text-black p-10">
-      <div className="w-full flex justify-between items-center px-6">
+    <div className="main-container">
+      <div className="main-topbar">
         <div>
-          <SettingButton href="/Login">게임 관리</SettingButton>
+          <SettingButton href="/login">게임 관리</SettingButton>
         </div>
         <div>
           <SettingButton href="/ranking">랭킹</SettingButton>
         </div>
       </div>
 
-      <h1 className="text-[6rem] my-5 mt-30">PUZZLE GAME</h1>
+      <h1 className="main-title">PUZZLE GAME</h1>
 
-      <div className="flex flex-wrap justify-center gap-28 mt-28">
+      <div className="main-button-group">
         {[1, 2, 3].map((num, index) => (
           <MainButton
             key={index}
