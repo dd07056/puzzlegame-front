@@ -64,7 +64,7 @@ export default function Puzzle3() {
 
   const moveTile = (index) => {
     if (isCleared || !canMove(index)) return;
-
+  
     const emptyIndex = tiles.indexOf(EMPTY_TILE);
     const newTiles = [...tiles];
     [newTiles[index], newTiles[emptyIndex]] = [
@@ -72,8 +72,12 @@ export default function Puzzle3() {
       newTiles[index],
     ];
     setTiles(newTiles);
-    setTries((prev) => [...prev, index]);
-
+  
+    setTries((prev) => {
+      if (prev.length >= MAX_TRIES) return prev; 
+      return [...prev, index];
+    });
+  
     if (checkIfCleared(newTiles)) {
       setIsCleared(true);
       setShowRankingButton(true);
@@ -81,14 +85,14 @@ export default function Puzzle3() {
     }
   };
 
-  // 퍼즐을 강제로 클리어하는 함수
-  // const handleForceClear = () => {
-  //   const clearedTiles = Array.from({ length: SIZE * SIZE }, (_, i) => i + 1);
-  //   setTiles(clearedTiles);
-  //   setIsCleared(true);
-  //   setShowRankingButton(true);
-  //   alert("퍼즐이 강제로 클리어되었습니다!");
-  // };
+  //퍼즐을 강제로 클리어하는 함수
+  const handleForceClear = () => {
+    const clearedTiles = Array.from({ length: SIZE * SIZE }, (_, i) => i + 1);
+    setTiles(clearedTiles);
+    setIsCleared(true);
+    setShowRankingButton(true);
+    alert("퍼즐이 강제로 클리어되었습니다!");
+  };
 
   const handleSubmit2 = async () => {
     if (username.trim() === "") {
@@ -143,31 +147,24 @@ export default function Puzzle3() {
           </div>
         ))}
       </div>
-      {/* 퍼즐을 수동으로 클리어하는 버튼 (테스트용)
       <div className="flex justify-center mt-4">
         <button
           onClick={handleForceClear}
-          className="bg-green-600 text-white px-4 py-2 rounded"
+          className="clear-button"
         >
           클리어 버튼
         </button>
-      </div> */}
+      </div> 
       {/* 클리어 후 이름 입력 및 랭킹 버튼 */}
       {isCleared && showRankingButton && (
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded shadow-md flex items-center space-x-2">
+        <div className="ranking-input-container">
           <input
             type="text"
             placeholder="이름을 입력하세요"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 rounded"
           />
-          <button
-            onClick={handleSubmit2}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            랭킹 보기
-          </button>
+          <button onClick={handleSubmit2}>랭킹 보기</button>
         </div>
       )}
     </>

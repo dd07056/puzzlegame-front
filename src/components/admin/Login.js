@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="login-container">
       <h1>관리자 로그인</h1>
       <form onSubmit={handleSubmit}>
         <div>

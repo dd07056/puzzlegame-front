@@ -1,6 +1,4 @@
-/* login.css */
-
-.container {
+.login-container {
   max-width: 400px;
   margin: 80px auto;
   padding: 30px 40px;
@@ -11,25 +9,25 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
+.login-container h1 {
   text-align: center;
   margin-bottom: 25px;
   color: #333;
 }
 
-form div {
+.login-container form div {
   margin-bottom: 20px;
 }
 
-label {
+.login-container label {
   display: block;
   font-weight: 600;
   margin-bottom: 8px;
   color: #555;
 }
 
-input[type="text"],
-input[type="password"] {
+.login-container input[type="text"],
+.login-container input[type="password"] {
   width: 100%;
   padding: 10px 12px;
   border: 1.5px solid #ccc;
@@ -38,15 +36,15 @@ input[type="password"] {
   transition: border-color 0.2s ease;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
   outline: none;
   border-color: #0070f3;
   box-shadow: 0 0 5px rgba(0, 112, 243, 0.5);
 }
 
-button[type="submit"],
-button.home-button {
+.login-container button[type="submit"],
+.login-container button.login-home-button {
   width: 100%;
   padding: 12px;
   border: none;
@@ -58,31 +56,26 @@ button.home-button {
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"] {
+.login-container button[type="submit"] {
   background-color: #0070f3;
 }
 
-button[type="submit"]:hover {
+.login-container button[type="submit"]:hover {
   background-color: #005bb5;
 }
-button.login-home-button {
+
+.login-container button.login-home-button {
   margin-top: 20px;
   background-color: #888;
-  color: white;
   padding: 16px 20px;
-  border: none;
   border-radius: 8px;
   font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: 100%;
-  max-width: 320px;
   display: block;
+  max-width: 320px;
   margin-left: auto;
   margin-right: auto;
 }
 
-button.login-home-button:hover {
+.login-container button.login-home-button:hover {
   background-color: #555;
 }

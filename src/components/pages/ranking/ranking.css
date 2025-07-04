@@ -50,13 +50,15 @@
 }
 
 .rankingList {
-  list-style-position: inside;
-  color: #2d3748;
+  counter-reset: rank;
+  list-style: none;
+  padding: 0;
 }
-
-.rankingList li {
-  margin-bottom: 0.5rem;
-  font-size: 1.125rem;
+.rankingList li::before {
+  counter-increment: rank;
+  content: counter(rank) ". ";
+  font-weight: bold;
+  color: #4a5568;
 }
 
 .noRanking {
