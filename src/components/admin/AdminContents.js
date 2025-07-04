@@ -21,7 +21,9 @@ export default function AdminContents() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:8081/api/common/ranking");
+      const res = await axios.get("http://localhost:8081/api/common/ranking", {
+        withCredentials: true,
+      });
       setAllRankings(res.data);
     } catch (error) {
       console.error("랭킹 데이터를 불러오는 중 오류 발생:", error);
@@ -87,7 +89,8 @@ export default function AdminContents() {
 
         const idToDelete = game.forms[idx].id;
         await axios.delete(
-          `http://localhost:8081/api/admin/ranking/delete/data/${idToDelete}`
+          `http://localhost:8081/api/admin/ranking/delete/data/${idToDelete}`,
+          { withCredentials: true }
         );
         fetchData();
       } catch (error) {
@@ -97,7 +100,6 @@ export default function AdminContents() {
     }
   };
 
-  // ✅ 수정된 부분: 특정 항목만 저장
   const saveSingleRanking = async (gameTitle, item) => {
     try {
       await axios.patch(
@@ -126,7 +128,8 @@ export default function AdminContents() {
       try {
         const gameId = getGameId(gameTitle);
         await axios.delete(
-          `http://localhost:8081/api/admin/ranking/delete/${gameId}`
+          `http://localhost:8081/api/admin/ranking/delete/${gameId}`,
+          { withCredentials: true }
         );
         alert(`${gameNameMap[gameTitle]} 랭킹이 초기화되었습니다.`);
         fetchData();
@@ -144,7 +147,9 @@ export default function AdminContents() {
       )
     ) {
       try {
-        await axios.delete("http://localhost:8081/api/admin/ranking/delete");
+        await axios.delete("http://localhost:8081/api/admin/ranking/delete", {
+          withCredentials: true,
+        });
         alert("전체 게임 랭킹이 초기화되었습니다.");
         fetchData();
       } catch (error) {
