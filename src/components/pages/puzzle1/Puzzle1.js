@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import PopUp from "../popup/PopUp";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import "./puzzle1.css";
 
 const playerImgUrl = "/assets/image/player.png";
 const boxImgUrl = "/assets/image/box.png";
