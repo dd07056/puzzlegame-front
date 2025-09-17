@@ -6,16 +6,14 @@ export default function Main() {
   const buttonImages = [
     "/assets/image/button1.png",
     "/assets/image/button2.png",
-    "/assets/image/button3.png",
-    "/assets/image/button4.png",
-    "/assets/image/button5.png",
+    "/assets/image/button3.png"
   ];
 
   return (
     <div className="main-container">
       <div className="main-topbar">
         <div>
-          <SettingButton href="/login">게임 관리</SettingButton>
+          <SettingButton href="/Login">게임 관리</SettingButton>
         </div>
         <div>
           <SettingButton href="/ranking">랭킹</SettingButton>
