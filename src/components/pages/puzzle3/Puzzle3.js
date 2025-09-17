@@ -85,15 +85,6 @@ export default function Puzzle3() {
     }
   };
 
-  //퍼즐을 강제로 클리어하는 함수
-  const handleForceClear = () => {
-    const clearedTiles = Array.from({ length: SIZE * SIZE }, (_, i) => i + 1);
-    setTiles(clearedTiles);
-    setIsCleared(true);
-    setShowRankingButton(true);
-    alert("퍼즐이 강제로 클리어되었습니다!");
-  };
-
   const handleSubmit2 = async () => {
     if (username.trim() === "") {
       alert("이름을 입력해주세요!");
@@ -147,14 +138,6 @@ export default function Puzzle3() {
           </div>
         ))}
       </div>
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={handleForceClear}
-          className="clear-button"
-        >
-          클리어 버튼
-        </button>
-      </div> 
       {/* 클리어 후 이름 입력 및 랭킹 버튼 */}
       {isCleared && showRankingButton && (
         <div className="ranking-input-container">
