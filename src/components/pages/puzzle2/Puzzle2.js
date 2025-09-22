@@ -165,13 +165,15 @@ export default function Puzzle2() {
       {!gameOver && (
         <div className="puzzle2-input-container">
           <input
-            className="puzzle2-input"
-            value={input}
-            onChange={(e) => {
-              const noSpace = e.target.value.replace(/\s/g, "");
-              setInput(noSpace);
-            }}
-            maxLength={answer.length}
+              className="puzzle2-input"
+              value={input}
+              onChange={(e) => {
+                const noSpace = e.target.value.replace(/\s/g, "");
+                if (noSpace.length <= answer.length) {
+                  setInput(noSpace);
+                } 
+              }}
+            maxLength={answer.length} // 있어도 무방
           />
           <button className="puzzle2-submit-button" onClick={handleSubmit}>
             제출
